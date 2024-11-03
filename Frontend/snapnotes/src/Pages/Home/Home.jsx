@@ -9,6 +9,7 @@ import axiosInstance from '../../Utils/axiosInstance';
 import Toast from '../../Components/ToastMessage/Toast';
 import EmptyCard from '../../Components/Empty card/EmptyCard';
 import addNoteImg from '../../assets/Images/paper.png';
+import noteNotFoundImg from '../../assets/Images/notfount.png';
 
 
 
@@ -30,6 +31,7 @@ const Home = () => {
 
   const [userInfo , setUserInfo] = useState(null);
   const [allNotes , setAllNotes] = useState([]);
+  const [isSearch , setIsSearch] = useState(false);
 
   const handleEdit = (noteDetails) => {
     setOpenAddEditModal({
@@ -101,6 +103,27 @@ const Home = () => {
       }
     }
   }
+
+  //Seach Note
+  const onSearchNote = async (query) => {
+    try {
+      const response = await axiosInstance.get("/search-note", {
+        params : {query},
+      })
+
+      if (response.data && response.data.notes) {
+        setIsSearch(true);
+        setAllNotes(response.data.notes)
+      }
+    } catch (error) {
+     console.log(error); 
+    }
+  };
+
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNotes();
+  }
   
   useEffect(() => {
     getAllNotes();
@@ -110,7 +133,11 @@ const Home = () => {
 
   return (
     <>
-      <Navbar userInfo={userInfo} />
+      <Navbar 
+        userInfo={userInfo} 
+        onSearchNote={onSearchNote} 
+        handleClearSearch={handleClearSearch}
+        />
 
       <div className="container mx-auto px-8">
       {allNotes.length > 0 ? (
@@ -130,7 +157,7 @@ const Home = () => {
       ))}
       </div>
       ) : (
-        <EmptyCard imgSrc={addNoteImg} message={`Start creating your first note! Click the 'Add' button to jot down your thoughts, ideas, and reminders. Let's get started!`}/>
+        <EmptyCard imgSrc={isSearch ? noteNotFoundImg : addNoteImg} message={isSearch ? `Oops!! Note not Found` : `Start creating your first note! Click the 'Add' button to jot down your thoughts, ideas, and reminders. Let's get started!`}/>
       )}
       </div>
 
