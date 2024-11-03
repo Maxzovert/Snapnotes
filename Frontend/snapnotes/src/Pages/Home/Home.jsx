@@ -6,6 +6,7 @@ import AddEditNotes from './AddEditNotes';
 import Modal from "react-modal";
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../Utils/axiosInstance';
+import Toast from '../../Components/ToastMessage/Toast';
 
 const Home = () => {
 
@@ -17,6 +18,12 @@ const Home = () => {
     data: null,
   });
 
+  const [showToastMsg , setShowToastMsg] = useState({
+    isShown : false,
+    message : "",
+    type : "add"
+  })
+
   const [userInfo , setUserInfo] = useState(null);
   const [allNotes , setAllNotes] = useState([]);
 
@@ -27,6 +34,22 @@ const Home = () => {
       type : "edit"
     });
   };
+
+  const showToastMesg = (message , type) => {
+    setShowToastMsg({
+      isShown : true,
+      message,
+      type,
+    })
+  }
+
+  const handlecloseToast = () => {
+    setShowToastMsg({
+      isShown : false,
+      message : ""
+    })
+  }
+
   //Get User Info 
   const getUserInfo = async () => {
     try {
@@ -109,8 +132,15 @@ const Home = () => {
             setOpenAddEditModal({ isShown: false, type: "add", data: null });
           }}
           getAllNotes={getAllNotes}
+          showToastMesg = {showToastMesg}
         />
       </Modal>
+      <Toast
+        isShown = {showToastMsg.isShown}
+        message = {showToastMsg.message}
+        type = {showToastMsg.type}
+        onClose = {handlecloseToast}
+      />
     </>
   )
 }
