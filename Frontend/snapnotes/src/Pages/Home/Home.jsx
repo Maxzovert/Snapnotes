@@ -18,7 +18,15 @@ const Home = () => {
   });
 
   const [userInfo , setUserInfo] = useState(null);
+  const [allNotes , setAllNotes] = useState([]);
 
+  const handleEdit = (noteDetails) => {
+    setOpenAddEditModal({
+      isShown : true,
+      data : noteDetails,
+      type : "edit"
+    });
+  };
   //Get User Info 
   const getUserInfo = async () => {
     try {
@@ -34,7 +42,21 @@ const Home = () => {
     }
   }
 
+  //Get All notes
+  const getAllNotes = async () => {
+    try {
+      const response = await axiosInstance.get("/get-all-notes");
+        if (response.data && response.data.notes) {
+          setAllNotes(response.data.notes);
+        }
+    } catch (error) {
+      console.log("an unexpected error")      
+    }
+  };
+
+  
   useEffect(() => {
+    getAllNotes();
     getUserInfo();
     return () => {};
   },[])
@@ -45,16 +67,20 @@ const Home = () => {
 
       <div className="container mx-auto px-8">
         <div className="grid grid-cols-3 gap-4 mt-8">
+        {allNotes.map((item , index) => (
           <NoteCard
-            title="Meeting on october 9th"
-            date="3rd Apr 2024"
-            content="Meeting on october 9thMeeting on october 9thMeeting on"
-            tags="Meeting"
-            isPinned={true}
-            onEdit={() => { }}
-            onDelete={() => { }}
-            onPinNote={() => { }}
+          key={item._id}
+          title={item.title}
+          date={item.created0n}
+          content={item.content}
+          tags={item.tags}
+          isPinned={item.isPinned}
+          onEdit={() => handleEdit(item)}
+          onDelete={() => { }}
+          onPinNote={() => { }}
           />
+        ))}
+
         </div>
       </div>
 
@@ -65,8 +91,8 @@ const Home = () => {
       </button>
 
       <Modal
-        isOpen={openAddEditModal.isShown}
-        onRequestClose={() => { }}
+      isOpen={openAddEditModal.isShown}
+      onRequestClose={() => { }}
         style={{
           overlay: {
             backgroundColor: "rgba(0,0,0,0.2)"
@@ -82,6 +108,7 @@ const Home = () => {
           onClose={() => {
             setOpenAddEditModal({ isShown: false, type: "add", data: null });
           }}
+          getAllNotes={getAllNotes}
         />
       </Modal>
     </>

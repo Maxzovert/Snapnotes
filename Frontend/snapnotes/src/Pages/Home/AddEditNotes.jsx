@@ -1,22 +1,62 @@
 import React, { useState } from 'react'
 import TagsInput from '../../Components/Input/TagsInput'
 import { MdClose } from 'react-icons/md';
+import axiosInstance from '../../Utils/axiosInstance';
 
-const AddEditNotes = ({noteData ,type, onClose}) => {
+const AddEditNotes = ({noteData ,type, onClose , getAllNotes}) => {
 
-  const [title , setTitle] = useState("");
-  const [content , setContent] = useState("");
-  const [tags , setTags] = useState([]);
+  const [title , setTitle] = useState(noteData?.title || "");
+  const [content , setContent] = useState(noteData?.content || "");
+  const [tags , setTags] = useState(noteData?.tags || []);
   const [error , setError] = useState(null);
 
   //Add Note
   const  addNewNote = async () => {
+    try {
+      const response = await axiosInstance.post("/add-note", {
+        title,
+        content,
+        tags,
+      });
 
+      if (response.data && response.data.note) {
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message)
+      }
+    }
   }
 
   //Edit note
   const editNote = async () => {
-    
+    const noteId = noteData._id;
+    try {
+      const response = await axiosInstance.put("/edit-note/" + noteId , {
+        title,
+        content,
+        tags,
+      });
+
+      if (response.data && response.data.note) {
+        getAllNotes();
+        onClose();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        setError(error.response.data.message)
+      }
+    }
   }
 
   const  handleAddNote = () => {
@@ -81,8 +121,8 @@ const AddEditNotes = ({noteData ,type, onClose}) => {
 
       <button 
         className="btn-primary font-medium mt-5 p-3" 
-        onClick={handleAddNote}>ADD</button>
-    </div>
+        onClick={handleAddNote}>{type === 'edit' ? 'UPDATE' : 'ADD'}</button>
+    </div> 
   )
 }
 
