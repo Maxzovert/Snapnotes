@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import TagsInput from '../../Components/Input/TagsInput'
 import { MdClose } from 'react-icons/md';
 import axiosInstance from '../../Utils/axiosInstance';
+import Buttons from '../../Components/Utilities/Buttons';
 
 const AddEditNotes = ({noteData ,type, onClose , getAllNotes, showToastMesg}) => {
 
@@ -113,6 +114,8 @@ const AddEditNotes = ({noteData ,type, onClose , getAllNotes, showToastMesg}) =>
             onChange={({target}) => setContent(target.value)}
         />
       </div>
+
+      <Buttons content={content} setContent={setContent}/>
 
       <div className="mt-3">
         <label className="input-label">TAGS</label>
