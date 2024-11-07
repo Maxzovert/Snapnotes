@@ -3,6 +3,7 @@ import TagsInput from '../../Components/Input/TagsInput'
 import { MdClose } from 'react-icons/md';
 import axiosInstance from '../../Utils/axiosInstance';
 import Buttons from '../../Components/Utilities/Buttons';
+import WordsCounter from '../../Components/Utilities/WordsCounter';
 
 const AddEditNotes = ({noteData ,type, onClose , getAllNotes, showToastMesg}) => {
 
@@ -102,9 +103,11 @@ const AddEditNotes = ({noteData ,type, onClose , getAllNotes, showToastMesg}) =>
             onChange={({target}) => setTitle(target.value)}
         />
       </div>
-
       <div className="flex flex-col gap-2 mt-4">
+        <div className="flex flex-row justify-between">
         <label className="input-label">CONTENT</label>
+        <WordsCounter content={content}/>
+        </div>
         <textarea 
             type="text"
             className="text-sm text-slate-950 outline-none bg-slate-100 p-2 rounded"
