@@ -1,7 +1,9 @@
 import moment from 'moment';
-import React from 'react'
+import React, { useState } from 'react'
 import {MdOutlinePushPin} from "react-icons/md";
 import { MdCreate , MdDelete } from 'react-icons/md';
+import ColorTray from '../Utilities/ColorTray';
+
 
 
 const NoteCard = ({
@@ -14,8 +16,9 @@ const NoteCard = ({
   onDelete, 
   onPinNote
 }) => {
+  const [bgColor, setBgColor] = useState('#ffffff');
   return (
-    <div className="border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out">
+    <div className="border rounded p-4 hover:shadow-xl transition-all ease-in-out" style={{ backgroundColor: bgColor }}>
       <div className="flex items-center justify-between">
         <div>
             <h6 className="text-sm font-medium">{title}</h6>
@@ -30,6 +33,9 @@ const NoteCard = ({
         <div className="text-xs text-slate-500">{tags.map((item) => `#${item} `)}</div>
 
       <div className="flex items-center gap-2">
+        <div className='mt-2 border-gray-300'>
+        <ColorTray onColorSelect={setBgColor}/>
+        </div>
         <MdCreate
             className="icon-btn hover:text-green-600"
             onClick={onEdit}
